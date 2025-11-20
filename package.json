@@ -1,0 +1,38 @@
+{
+  "name": "evo-website",
+  "version": "3.0.0",
+  "description": "Site oficial da Evo - Desenvolvimento de Apps Mobile",
+  "private": true,
+  "scripts": {
+    "audit": "./verificar-otimizacoes.sh",
+    "validate": "echo 'Validando HTML...' && htmlhint '*.html'",
+    "minify-css": "echo 'Minificar CSS em produção'",
+    "minify-js": "echo 'Minificar JS em produção'",
+    "build": "npm run validate && npm run minify-css && npm run minify-js",
+    "test": "npm run audit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evo/website.git"
+  },
+  "keywords": [
+    "evo",
+    "apps",
+    "mobile",
+    "development",
+    "pwa",
+    "progressive-web-app"
+  ],
+  "author": "Evo Team <contato@evo.com.br>",
+  "license": "UNLICENSED",
+  "homepage": "https://www.evo.com.br",
+  "devDependencies": {
+    "htmlhint": "^1.1.4",
+    "csso-cli": "^4.0.2",
+    "terser": "^5.27.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

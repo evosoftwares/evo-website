@@ -1,0 +1,14 @@
+Contact: mailto:contato@evo.com.br
+Contact: https://www.evo.com.br/suporte.html
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: pt-BR, en
+Canonical: https://www.evo.com.br/.well-known/security.txt
+
+# Política de Segurança - Evo
+# Se você encontrou uma vulnerabilidade de segurança, entre em contato conosco
+
+# Escopo
+# Este arquivo cobre todos os domínios e serviços da Evo
+
+# Agradecimentos
+# Agradecemos pesquisadores de segurança responsáveis

@@ -1,0 +1,72 @@
+# robots.txt para Evo - Desenvolvimento de Apps Mobile
+# Otimizado para SEO e indexação completa
+# Última atualização: 19/11/2025
+
+# Regras para todos os crawlers
+User-agent: *
+
+# Permitir rastreamento de todas as páginas principais
+Allow: /index.html
+Allow: /about.html
+Allow: /portfolio.html
+Allow: /materiais.html
+Allow: /gamificacao.html
+Allow: /blog-detalhes.html
+Allow: /suporte.html
+Allow: /lgpd.html
+Allow: /registro-marca.html
+
+# Permitir acesso a recursos essenciais
+Allow: /styles.css
+Allow: /script.js
+Allow: /data-visualization.css
+Allow: /*.svg$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.webp$
+
+# Bloquear arquivos e diretórios desnecessários
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.vscode/
+Disallow: /temp/
+Disallow: /tmp/
+Disallow: /*.log$
+Disallow: /*.md$
+
+# Regras específicas para Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Regras específicas para Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Regras específicas para outros buscadores importantes
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Bloquear crawlers indesejados e scrapers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemap
+Sitemap: https://www.evo.com.br/sitemap.xml
