@@ -6,7 +6,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     initDataVisualizations();
     initScrollAnimations();
-    console.log('Data visualizations initialized ✓');
 });
 
 // Main initialization function
@@ -309,5 +308,3 @@ window.DataViz = {
     animateValue,
     initDataVisualizations
 };
-
-console.log('Data visualization module loaded ✓');

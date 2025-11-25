@@ -17,29 +17,21 @@ const urlsToCache = [
 
 // Install event - cache dos recursos
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[Service Worker] Caching app shell');
-        return cache.addAll(urlsToCache);
-      })
+      .then((cache) => cache.addAll(urlsToCache))
       .then(() => self.skipWaiting())
   );
 });
 
 // Activate event - limpar caches antigos
 self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('[Service Worker] Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
+        cacheNames
+          .filter((cacheName) => cacheName !== CACHE_NAME)
+          .map((cacheName) => caches.delete(cacheName))
       );
     }).then(() => self.clients.claim())
   );
@@ -88,9 +80,14 @@ self.addEventListener('sync', (event) => {
   }
 });
 
-async function syncData() {
-  console.log('[Service Worker] Background sync');
-  // Implementar sincronização de dados aqui
+/**
+ * Sincroniza dados pendentes quando conexão é restaurada
+ * @returns {Promise<void>}
+ */
+function syncData() {
+  // Placeholder para sincronização futura
+  // Quando implementado, deve retornar uma Promise
+  return Promise.resolve();
 }
 
 // Push notifications - para funcionalidades futuras

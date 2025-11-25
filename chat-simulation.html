@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Simulation - NLU + Groq Hybrid</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .chat-header h1 { font-size: 18px; margin-bottom: 5px; }
+        .chat-header p { font-size: 12px; opacity: 0.8; }
+        .status-badges {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge.nlu { background: #10b981; }
+        .badge.groq { background: #f59e0b; }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.user { align-items: flex-end; }
+        .message.bot { align-items: flex-start; }
+        .message-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .message.bot .message-bubble {
+            background: white;
+            color: #1e293b;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .message-meta {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .source-tag {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        .source-tag.nlu { background: #d1fae5; color: #059669; }
+        .source-tag.groq { background: #fef3c7; color: #d97706; }
+        .source-tag.hybrid { background: #e0e7ff; color: #4f46e5; }
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .suggestion {
+            padding: 8px 14px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+        .suggestion:hover {
+            background: #e0e7ff;
+            border-color: #818cf8;
+        }
+        .chat-input {
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .chat-input input:focus { border-color: #667eea; }
+        .chat-input button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .chat-input button:hover { transform: scale(1.05); }
+        .typing-indicator {
+            display: none;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 15px;
+        }
+        .typing-indicator.show { display: inline-block; }
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1s infinite;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .debug-panel {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .debug-panel h3 {
+            color: #f59e0b;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        .debug-line { margin: 3px 0; }
+        .debug-line .label { color: #94a3b8; }
+        .debug-line .value { color: #10b981; }
+        .debug-line .value.warning { color: #f59e0b; }
+        .disambiguation-options {
+            margin-top: 10px;
+        }
+        .disambiguation-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .disambiguation-btn:hover {
+            background: #e0e7ff;
+            border-color: #818cf8;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>EVA - Assistente Evo</h1>
+            <p>NLU Engine v3.3 + Groq AI v1.1 (Sync)</p>
+            <div class="status-badges">
+                <span class="badge nlu" id="nluStatus">NLU: Ativo</span>
+                <span class="badge groq" id="groqStatus">Groq: Verificando...</span>
+                <span class="badge" id="syncStatus" style="background: #6366f1;">Sync: OK</span>
+            </div>
+            <button onclick="resetAllContexts()" style="margin-top: 10px; padding: 6px 12px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 15px; font-size: 11px; cursor: pointer;">Reset Contextos</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-bubble">
+                    Ola! Sou a EVA, assistente virtual da Evo. Como posso ajudar voce hoje?
+                </div>
+                <div class="message-meta">
+                    <span class="source-tag nlu">NLU Local</span>
+                    <span>agora</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter')sendMessage()">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+
+        <div class="debug-panel" id="debugPanel">
+            <h3>Debug Panel</h3>
+            <div id="debugContent">Aguardando mensagem...</div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="keywords-nichos.js"></script>
+    <script src="keywords-chat.js"></script>
+    <script src="nlu-engine.js"></script>
+    <script src="nlu-integration.js"></script>
+    <script src="groq-integration.js"></script>
+
+    <script>
+        // Estado do chat
+        let chatState = {
+            userName: null,
+            messages: [],
+            pendingDisambiguation: null
+        };
+
+        // Verificar status do Groq
+        function checkGroqStatus() {
+            const groqBadge = document.getElementById('groqStatus');
+            if (window.GroqIntegration && window.GroqIntegration.isConfigured()) {
+                groqBadge.textContent = 'Groq: Ativo';
+                groqBadge.style.background = '#10b981';
+            } else {
+                groqBadge.textContent = 'Groq: Offline';
+                groqBadge.style.background = '#ef4444';
+            }
+        }
+
+        // Adicionar mensagem ao chat
+        function addMessage(text, isUser, source = 'nlu', debug = null) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+
+            let sourceTag = '';
+            if (!isUser) {
+                const sourceClass = source.includes('groq') ? 'groq' : source.includes('hybrid') ? 'hybrid' : 'nlu';
+                const sourceLabel = source === 'groq' ? 'Groq AI' : source === 'hybrid-groq' ? 'Hybrid (Groq)' : source === 'hybrid-nlu' ? 'Hybrid (NLU)' : 'NLU Local';
+                sourceTag = `<span class="source-tag ${sourceClass}">${sourceLabel}</span>`;
+            }
+
+            messageDiv.innerHTML = `
+                <div class="message-bubble">${text}</div>
+                <div class="message-meta">
+                    ${sourceTag}
+                    <span>agora</span>
+                </div>
+            `;
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Atualizar debug panel
+            if (debug) {
+                updateDebugPanel(debug);
+            }
+        }
+
+        // Adicionar sugestoes
+        function addSuggestions(suggestions) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'suggestions';
+
+            suggestions.forEach(sug => {
+                const btn = document.createElement('button');
+                btn.className = 'suggestion';
+                btn.textContent = sug.text;
+                btn.onclick = () => {
+                    document.getElementById('userInput').value = sug.text;
+                    sendMessage();
+                };
+                suggestionsDiv.appendChild(btn);
+            });
+
+            messagesDiv.appendChild(suggestionsDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Adicionar opcoes de desambiguacao
+        function addDisambiguationOptions(disambiguation) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'disambiguation-options';
+
+            disambiguation.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'disambiguation-btn';
+                btn.textContent = opt.text;
+                btn.onclick = () => selectDisambiguation(opt.intent);
+                optionsDiv.appendChild(btn);
+            });
+
+            messagesDiv.appendChild(optionsDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Selecionar opcao de desambiguacao
+        async function selectDisambiguation(intent) {
+            if (window.NLUIntegration) {
+                const resolved = NLUIntegration.resolveDisambiguation(intent);
+                if (resolved.resolved) {
+                    // Gerar resposta para o intent selecionado
+                    const analysis = {
+                        intent: { primary: { intent: intent, confidence: 100 } },
+                        category: { detected: null }
+                    };
+                    const response = NLUIntegration.generateResponse(analysis, chatState.userName || 'voce');
+                    if (response) {
+                        addMessage(response.message, false, 'nlu', { intent, source: 'disambiguation' });
+                    }
+                }
+            }
+        }
+
+        // Atualizar debug panel
+        function updateDebugPanel(debug) {
+            const content = document.getElementById('debugContent');
+            let html = '';
+
+            if (debug.source) {
+                html += `<div class="debug-line"><span class="label">Source:</span> <span class="value">${debug.source}</span></div>`;
+            }
+            if (debug.intent) {
+                html += `<div class="debug-line"><span class="label">Intent:</span> <span class="value">${debug.intent}</span></div>`;
+            }
+            if (debug.confidence !== undefined) {
+                const confClass = debug.confidence >= 70 ? '' : 'warning';
+                html += `<div class="debug-line"><span class="label">Confidence:</span> <span class="value ${confClass}">${debug.confidence}%</span></div>`;
+            }
+            if (debug.category) {
+                html += `<div class="debug-line"><span class="label">Category:</span> <span class="value">${debug.category}</span></div>`;
+            }
+            if (debug.processingTime) {
+                html += `<div class="debug-line"><span class="label">Time:</span> <span class="value">${debug.processingTime}ms</span></div>`;
+            }
+            if (debug.groqUsed !== undefined) {
+                html += `<div class="debug-line"><span class="label">Groq Used:</span> <span class="value">${debug.groqUsed ? 'Sim' : 'Nao'}</span></div>`;
+            }
+            if (debug.cached !== undefined) {
+                html += `<div class="debug-line"><span class="label">Cached:</span> <span class="value">${debug.cached ? 'Sim' : 'Nao'}</span></div>`;
+            }
+
+            // Mostrar status de sincronização
+            if (window.NLUIntegration && window.NLUIntegration.getSyncStatus) {
+                const syncStatus = NLUIntegration.getSyncStatus();
+                const syncClass = syncStatus.isSynced ? '' : 'warning';
+                html += `<div class="debug-line" style="margin-top: 8px; border-top: 1px solid #374151; padding-top: 8px;">`;
+                html += `<span class="label">Sync Status:</span> <span class="value ${syncClass}">${syncStatus.isSynced ? 'Sincronizado' : 'Dessincronizado (drift: ' + syncStatus.drift + ')'}</span></div>`;
+                html += `<div class="debug-line"><span class="label">NLU Msgs:</span> <span class="value">${syncStatus.nluMessageCount}</span></div>`;
+                html += `<div class="debug-line"><span class="label">Groq Msgs:</span> <span class="value">${syncStatus.groqUserMessageCount}</span></div>`;
+            }
+
+            content.innerHTML = html || 'Sem dados';
+        }
+
+        // Mostrar indicador de digitacao
+        function showTyping(show) {
+            // Simples delay para UX
+        }
+
+        // Enviar mensagem
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // Adicionar mensagem do usuario
+            addMessage(message, true);
+            input.value = '';
+
+            // Processar com sistema hibrido
+            try {
+                if (window.NLUIntegration) {
+                    const result = await NLUIntegration.processMessageHybrid(message);
+
+                    const debug = {
+                        source: result.source || 'unknown',
+                        intent: result.nluAnalysis?.intent?.primary?.intent || result.analysis?.analysis?.intent?.primary?.intent || 'N/A',
+                        confidence: result.nluAnalysis?.overallConfidence || result.analysis?.analysis?.overallConfidence || 0,
+                        category: result.nluAnalysis?.category?.detected || result.analysis?.analysis?.category?.detected || 'N/A',
+                        processingTime: result.groqData?.processingTime || result.analysis?.debug?.processingTime || 0,
+                        groqUsed: result.source === 'hybrid-groq',
+                        cached: result.groqData?.cached || false
+                    };
+
+                    // Se Groq respondeu
+                    if (result.type === 'groq_response' && result.message) {
+                        addMessage(result.message, false, 'hybrid-groq', debug);
+                        return;
+                    }
+
+                    // Se precisa desambiguacao
+                    if (result.type === 'disambiguation_needed') {
+                        addMessage(result.question, false, 'nlu', debug);
+                        addDisambiguationOptions(result);
+                        return;
+                    }
+
+                    // Processar com NLU local
+                    const analysis = result.analysis?.analysis || result.nluAnalysis || {};
+                    const response = NLUIntegration.generateResponse(analysis, chatState.userName || 'voce');
+
+                    if (response && response.message) {
+                        addMessage(response.message, false, result.source || 'nlu', debug);
+                        if (response.suggestions && response.suggestions.length > 0) {
+                            addSuggestions(response.suggestions.slice(0, 3));
+                        }
+                    } else {
+                        // Resposta padrao
+                        const defaultMsg = 'Entendi! Me conta mais sobre o que voce precisa para eu poder ajudar melhor.';
+                        addMessage(defaultMsg, false, 'nlu', debug);
+                    }
+
+                    // Atualizar sync status apos cada mensagem
+                    updateSyncStatus();
+                }
+            } catch (error) {
+                console.error('Erro ao processar:', error);
+                addMessage('Desculpe, tive um problema. Pode repetir?', false, 'error');
+            }
+        }
+
+        // Atualizar badge de sync
+        function updateSyncStatus() {
+            const syncBadge = document.getElementById('syncStatus');
+            if (window.NLUIntegration && window.NLUIntegration.getSyncStatus) {
+                const status = NLUIntegration.getSyncStatus();
+                if (status.isSynced) {
+                    syncBadge.textContent = 'Sync: OK';
+                    syncBadge.style.background = '#6366f1';
+                } else {
+                    syncBadge.textContent = `Sync: Drift ${status.drift}`;
+                    syncBadge.style.background = '#f59e0b';
+                }
+            }
+        }
+
+        // Reset all contexts
+        function resetAllContexts() {
+            if (window.NLUIntegration && window.NLUIntegration.resetAllContexts) {
+                const result = NLUIntegration.resetAllContexts();
+                console.log('Contexts reset:', result);
+
+                // Limpar chat
+                const messagesDiv = document.getElementById('chatMessages');
+                messagesDiv.innerHTML = `
+                    <div class="message bot">
+                        <div class="message-bubble">
+                            Contextos resetados! Ola novamente. Como posso ajudar?
+                        </div>
+                        <div class="message-meta">
+                            <span class="source-tag nlu">NLU Local</span>
+                            <span>agora</span>
+                        </div>
+                    </div>
+                `;
+
+                // Atualizar debug
+                updateDebugPanel({ source: 'reset', intent: 'N/A', confidence: 100 });
+                updateSyncStatus();
+            }
+        }
+
+        // Forcar sincronizacao manual
+        function forceSync() {
+            if (window.NLUIntegration && window.NLUIntegration.syncContexts) {
+                const result = NLUIntegration.syncContexts();
+                console.log('Sync result:', result);
+                updateSyncStatus();
+            }
+        }
+
+        // Inicializar
+        window.onload = function() {
+            checkGroqStatus();
+            updateSyncStatus();
+
+            // Mensagens de teste rapido
+            const testMessages = [
+                'quanto custa um app de delivery?',
+                'qual o prazo de entrega?',
+                'quais funcionalidades tem?',
+                'quero criar um app'
+            ];
+
+            // Adicionar sugestoes iniciais
+            addSuggestions(testMessages.map(m => ({ text: m })));
+
+            // Atualizar sync status periodicamente
+            setInterval(updateSyncStatus, 2000);
+        };
+    </script>
+</body>
+</html>

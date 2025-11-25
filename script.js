@@ -1,3 +1,55 @@
+// ============================================
+// CONSTANTES DE VALIDAÇÃO
+// ============================================
+const VALIDATION_CONFIG = {
+    NAME_MIN_LENGTH: 3,
+    NAME_MAX_LENGTH: 100,
+    NAME_MIN_PARTS: 2,
+    NAME_PART_MIN_LENGTH: 2,
+    MESSAGE_MIN_LENGTH: 10,
+    MESSAGE_MAX_LENGTH: 500,
+    MESSAGE_WARNING_THRESHOLD: 50
+};
+
+// DDDs válidos no Brasil
+const VALID_DDDS = [
+    11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28,
+    31, 32, 33, 34, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+    51, 53, 54, 55, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+    71, 73, 74, 75, 77, 79, 82, 84, 85, 86, 87, 88, 89,
+    92, 93, 94, 95, 97, 98, 99
+];
+
+// ============================================
+// UTILITÁRIOS
+// ============================================
+
+/**
+ * Cria elemento de mensagem de sucesso
+ * @param {string} text - Texto da mensagem
+ * @returns {HTMLElement} Elemento criado
+ */
+function createSuccessMessage(text) {
+    const el = document.createElement('div');
+    el.className = 'success-message';
+    el.setAttribute('role', 'alert');
+    el.textContent = text;
+    return el;
+}
+
+/**
+ * Remove mensagem de sucesso após delay
+ * @param {HTMLElement} element - Elemento a remover
+ * @param {number} delay - Delay em ms (default 5000)
+ */
+function removeSuccessMessageAfterDelay(element, delay = 5000) {
+    setTimeout(() => {
+        if (element && element.parentNode) {
+            element.remove();
+        }
+    }, delay);
+}
+
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', function() {
     initMobileMenu();
@@ -15,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initLoadMoreArticles();
     initArticleNavigation();
     initNewsletterForm();
-    console.log('EVO - Site carregado com sucesso! 🚀');
 });
 
 // Lazy Loading Enhancement
@@ -47,8 +98,6 @@ function initLazyLoading() {
 
         lazyImages.forEach(img => imageObserver.observe(img));
     }
-
-    console.log('Lazy loading initialized ✓');
 }
 
 // Touch Optimizations for Mobile
@@ -82,7 +131,6 @@ function initTouchOptimizations() {
         });
     }
 
-    console.log(`Touch optimizations initialized (Touch device: ${isTouchDevice}) ✓`);
 }
 
 // Load More Projects Functionality
@@ -119,7 +167,6 @@ function initLoadMoreProjects() {
         // Hide the button after loading
         loadMoreBtn.style.display = 'none';
 
-        console.log('More projects loaded ✓');
     });
 }
 
@@ -148,7 +195,6 @@ function initBlogFilters() {
                 }
             });
 
-            console.log(`Blog filtered by: ${filter} ✓`);
         });
     });
 }
@@ -325,8 +371,7 @@ function initLoadMoreArticles() {
                 loadMoreBtn.disabled = false;
             }
 
-            console.log('Articles loaded: ' + articlesLoaded + ' / ' + additionalArticles.length + ' ✓');
-        }, 800);
+            }, 800);
     });
 }
 
@@ -427,28 +472,16 @@ function initNewsletterForm() {
                 return;
             }
 
-            // Show success message
-            const successMessage = document.createElement('div');
-            successMessage.style.backgroundColor = '#d4edda';
-            successMessage.style.color = '#155724';
-            successMessage.style.padding = '12px';
-            successMessage.style.borderRadius = '4px';
-            successMessage.style.marginBottom = '15px';
-            successMessage.style.border = '1px solid #c3e6cb';
-            successMessage.textContent = '✓ Inscrição realizada com sucesso! Obrigado por se inscrever.';
-
+            // Show success message usando função utilitária
+            const successMessage = createSuccessMessage('✓ Inscrição realizada com sucesso! Obrigado por se inscrever.');
             const formWrapper = newsletterForm.parentNode;
             formWrapper.insertBefore(successMessage, newsletterForm);
 
             // Reset form
             newsletterForm.reset();
 
-            // Remove success message after 5 seconds
-            setTimeout(() => {
-                successMessage.remove();
-            }, 5000);
-
-            console.log('Newsletter subscription confirmed ✓');
+            // Remove success message after delay
+            removeSuccessMessageAfterDelay(successMessage);
         });
     }
 }
@@ -527,7 +560,6 @@ function initMobileMenu() {
         }, 250);
     });
 
-    console.log('Mobile menu initialized ✓');
 }
 
 // Smooth Scrolling for Navigation
@@ -560,11 +592,9 @@ function initInputMasks() {
     // Máscara para Nome (apenas letras e espaços)
     const nameInput = document.getElementById('nameInput');
     if (nameInput) {
-        const nameMask = IMask(nameInput, {
-            mask: /[a-záàâãéèêíïóôõöúçñA-ZÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ\s]/,
-            definitions: {
-                '#': { pattern: /[0-9]/ }
-            }
+        // IMask aplicado sem armazenar referência (não utilizada)
+        IMask(nameInput, {
+            mask: /[a-záàâãéèêíïóôõöúçñA-ZÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ\s]/
         });
 
         nameInput.addEventListener('blur', validateNameField);
@@ -574,7 +604,8 @@ function initInputMasks() {
     // Máscara para Celular: (XX) 9XXXX-XXXX
     const phoneInput = document.getElementById('phoneInput');
     if (phoneInput) {
-        const phoneMask = IMask(phoneInput, {
+        // IMask aplicado sem armazenar referência (não utilizada)
+        IMask(phoneInput, {
             mask: '(00) 90000-0000',
             lazy: false,
             overwrite: true
@@ -588,9 +619,9 @@ function initInputMasks() {
     const messageInput = document.getElementById('messageInput');
     if (messageInput) {
         messageInput.addEventListener('input', function() {
-            // Limita a 500 caracteres
-            if (this.value.length > 500) {
-                this.value = this.value.substring(0, 500);
+            // Limita ao máximo de caracteres
+            if (this.value.length > VALIDATION_CONFIG.MESSAGE_MAX_LENGTH) {
+                this.value = this.value.substring(0, VALIDATION_CONFIG.MESSAGE_MAX_LENGTH);
             }
             updateCharacterCount(this);
         });
@@ -611,33 +642,33 @@ function validateNameField() {
         errorMessage = 'O nome é obrigatório';
     }
     // Verificar comprimento mínimo
-    else if (name.length < 3) {
-        errorMessage = 'O nome deve ter pelo menos 3 caracteres';
+    else if (name.length < VALIDATION_CONFIG.NAME_MIN_LENGTH) {
+        errorMessage = `O nome deve ter pelo menos ${VALIDATION_CONFIG.NAME_MIN_LENGTH} caracteres`;
     }
     // Verificar comprimento máximo
-    else if (name.length > 100) {
-        errorMessage = 'O nome não pode ter mais de 100 caracteres';
+    else if (name.length > VALIDATION_CONFIG.NAME_MAX_LENGTH) {
+        errorMessage = `O nome não pode ter mais de ${VALIDATION_CONFIG.NAME_MAX_LENGTH} caracteres`;
     }
     // Verificar se tem pelo menos nome e sobrenome
-    else if (name.split(' ').length < 2) {
+    else if (name.split(' ').length < VALIDATION_CONFIG.NAME_MIN_PARTS) {
         errorMessage = 'Por favor, digite seu nome e sobrenome';
     }
     // Verificar se cada palavra tem pelo menos 2 caracteres
     else {
         const words = name.split(' ').filter(word => word.length > 0);
-        const invalidWords = words.some(word => word.length < 2);
-        if (invalidWords) {
-            errorMessage = 'Cada parte do nome deve ter pelo menos 2 caracteres';
+        const hasInvalidWords = words.some(word => word.length < VALIDATION_CONFIG.NAME_PART_MIN_LENGTH);
+        if (hasInvalidWords) {
+            errorMessage = `Cada parte do nome deve ter pelo menos ${VALIDATION_CONFIG.NAME_PART_MIN_LENGTH} caracteres`;
         }
     }
 
     if (errorMessage) {
         setFieldError(nameInput, errorMessage);
         return false;
-    } else {
-        clearFieldError(nameInput);
-        return true;
     }
+
+    clearFieldError(nameInput);
+    return true;
 }
 
 // Validar campo Celular
@@ -645,9 +676,6 @@ function validatePhoneField() {
     const phoneInput = document.getElementById('phoneInput');
     const phone = phoneInput.value.trim();
     let errorMessage = '';
-
-    // DDDs válidos no Brasil
-    const validDDDs = [11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31, 32, 33, 34, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 51, 53, 54, 55, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 73, 74, 75, 77, 79, 82, 84, 85, 86, 87, 88, 89, 92, 93, 94, 95, 97, 98, 99];
 
     // Verificar se está vazio
     if (!phone) {
@@ -661,8 +689,8 @@ function validatePhoneField() {
     else {
         const dddMatch = phone.match(/\((\d{2})\)/);
         if (dddMatch) {
-            const ddd = parseInt(dddMatch[1]);
-            if (!validDDDs.includes(ddd)) {
+            const ddd = parseInt(dddMatch[1], 10);
+            if (!VALID_DDDS.includes(ddd)) {
                 errorMessage = `DDD ${ddd} não é válido`;
             }
         }
@@ -671,10 +699,10 @@ function validatePhoneField() {
     if (errorMessage) {
         setFieldError(phoneInput, errorMessage);
         return false;
-    } else {
-        clearFieldError(phoneInput);
-        return true;
     }
+
+    clearFieldError(phoneInput);
+    return true;
 }
 
 // Validar campo Mensagem
@@ -688,21 +716,21 @@ function validateMessageField() {
         errorMessage = 'A mensagem é obrigatória';
     }
     // Verificar comprimento mínimo
-    else if (message.length < 10) {
-        errorMessage = `A mensagem deve ter pelo menos 10 caracteres (${message.length}/10)`;
+    else if (message.length < VALIDATION_CONFIG.MESSAGE_MIN_LENGTH) {
+        errorMessage = `A mensagem deve ter pelo menos ${VALIDATION_CONFIG.MESSAGE_MIN_LENGTH} caracteres (${message.length}/${VALIDATION_CONFIG.MESSAGE_MIN_LENGTH})`;
     }
     // Verificar comprimento máximo
-    else if (message.length > 500) {
-        errorMessage = 'A mensagem não pode ter mais de 500 caracteres';
+    else if (message.length > VALIDATION_CONFIG.MESSAGE_MAX_LENGTH) {
+        errorMessage = `A mensagem não pode ter mais de ${VALIDATION_CONFIG.MESSAGE_MAX_LENGTH} caracteres`;
     }
 
     if (errorMessage) {
         setFieldError(messageInput, errorMessage);
         return false;
-    } else {
-        clearFieldError(messageInput);
-        return true;
     }
+
+    clearFieldError(messageInput);
+    return true;
 }
 
 // Adicionar estado de erro visual
@@ -752,28 +780,25 @@ function removeErrorState() {
 // Atualizar contador de caracteres
 function updateCharacterCount(field) {
     const count = field.value.length;
-    const maxCount = 500;
+    const maxCount = VALIDATION_CONFIG.MESSAGE_MAX_LENGTH;
 
     let counterElement = field.nextElementSibling;
     if (counterElement && !counterElement.classList.contains('error-message')) {
         counterElement.remove();
     } else if (counterElement && counterElement.classList.contains('error-message')) {
-        counterElement = field.nextElementSibling.nextElementSibling;
+        counterElement = field.nextElementSibling?.nextElementSibling;
     }
 
     if (!counterElement || !counterElement.classList.contains('char-count')) {
         counterElement = document.createElement('small');
         counterElement.classList.add('char-count');
-        counterElement.style.fontSize = '12px';
-        counterElement.style.display = 'block';
-        counterElement.style.color = '#7f8c8d';
-        counterElement.style.marginTop = '5px';
         field.parentNode.insertBefore(counterElement, field.nextSibling);
     }
 
     const remaining = maxCount - count;
-    counterElement.textContent = `${count}/${maxCount} caracteres${remaining <= 50 ? ` (${remaining} restantes)` : ''}`;
-    counterElement.style.color = remaining <= 50 ? '#e67e22' : '#7f8c8d';
+    const showWarning = remaining <= VALIDATION_CONFIG.MESSAGE_WARNING_THRESHOLD;
+    counterElement.textContent = `${count}/${maxCount} caracteres${showWarning ? ` (${remaining} restantes)` : ''}`;
+    counterElement.classList.toggle('char-count-warning', showWarning);
 }
 
 // Contact Form Submission
@@ -800,29 +825,18 @@ function initContactForm() {
             const phone = document.getElementById('phoneInput').value.trim();
             const message = document.getElementById('messageInput').value.trim();
 
-            // Simulate form submission
-            console.log('Form submitted:', { name, phone, message });
+            // Process form submission
 
-            // Show success message
-            const successMessage = document.createElement('div');
-            successMessage.style.backgroundColor = '#d4edda';
-            successMessage.style.color = '#155724';
-            successMessage.style.padding = '12px';
-            successMessage.style.borderRadius = '4px';
-            successMessage.style.marginBottom = '15px';
-            successMessage.style.border = '1px solid #c3e6cb';
-            successMessage.textContent = '✓ Mensagem enviada com sucesso! Entraremos em contato em breve.';
-
+            // Show success message usando função utilitária
+            const successMessage = createSuccessMessage('✓ Mensagem enviada com sucesso! Entraremos em contato em breve.');
             const formWrapper = contactForm.parentNode;
             formWrapper.insertBefore(successMessage, contactForm);
 
             // Reset form
             contactForm.reset();
 
-            // Remove success message after 5 seconds
-            setTimeout(() => {
-                successMessage.remove();
-            }, 5000);
+            // Remove success message after delay
+            removeSuccessMessageAfterDelay(successMessage);
 
             // Scroll to success message
             successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1046,11 +1060,8 @@ partnerItems.forEach((item, index) => {
 
 // Initialize Slideshows using Swiper.js
 function initSlideshows() {
-    console.log('Initializing Slideshows...');
-
     // Check if Swiper is loaded
     if (typeof Swiper === 'undefined') {
-        console.error('Swiper is not loaded!');
         return;
     }
 
@@ -1058,10 +1069,6 @@ function initSlideshows() {
     const portfolioWrapper = document.querySelector('.portfolio-slideshow-wrapper');
     const testimonialsWrapper = document.querySelector('.testimonials-slideshow-wrapper');
     const blogWrapper = document.querySelector('.blog-slideshow-wrapper');
-
-    console.log('Portfolio wrapper found:', portfolioWrapper);
-    console.log('Testimonials wrapper found:', testimonialsWrapper);
-    console.log('Blog wrapper found:', blogWrapper);
 
     // Portfolio Slideshow
     if (portfolioWrapper) {
@@ -1093,7 +1100,6 @@ function initSlideshows() {
             observer: true,
             observeParents: true,
         });
-        console.log('Portfolio Swiper initialized:', portfolioSwiper);
 
         // Navigation buttons
         const portfolioPrevBtn = document.querySelector('.portfolio-prev');
@@ -1142,7 +1148,6 @@ function initSlideshows() {
             observer: true,
             observeParents: true,
         });
-        console.log('Testimonials Swiper initialized:', testimonialsSwiper);
 
         // Navigation buttons
         const testimonialsPrevBtn = document.querySelector('.testimonials-prev');
@@ -1191,7 +1196,6 @@ function initSlideshows() {
             observer: true,
             observeParents: true,
         });
-        console.log('Blog Swiper initialized:', blogSwiper);
 
         // Navigation buttons
         const prevBtn = document.querySelector('.blog-prev');
@@ -1212,8 +1216,6 @@ function initSlideshows() {
         console.error('Error initializing Blog Swiper:', error);
     }
     }
-
-    console.log('Slideshows initialization complete!');
 }
 
 // Enhanced Scroll Animations with Slide Effects

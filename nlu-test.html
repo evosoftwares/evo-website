@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLU Engine v3.0 - Testes e Demonstracao</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #ebf0f4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        h2 {
+            color: #0055cc;
+            margin: 20px 0 15px;
+            font-size: 18px;
+        }
+        .test-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 14px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #0055cc;
+            box-shadow: 0 0 0 4px rgba(0, 85, 204, 0.1);
+        }
+        button {
+            padding: 14px 24px;
+            background: #0055cc;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: #408cf7;
+            transform: translateY(-2px);
+        }
+        .results {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .test-cases {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .test-case {
+            background: #f0f7ff;
+            border: 1px solid #d0e3ff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        .test-case:hover {
+            background: #0055cc;
+            color: white;
+            border-color: #0055cc;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .metric {
+            background: linear-gradient(135deg, #0055cc 0%, #408cf7 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #0055cc;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .intent-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .confidence-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0055cc, #10b981);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .tab.active {
+            background: #0055cc;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .success { color: #10b981; }
+        .warning { color: #f59e0b; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NLU Engine v3.0 - Motor de Inteligencia Artificial</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">
+            Com Regex Patterns, TF-IDF, Slot Filling, Learning System, Disambiguation e Softmax Calibration
+        </p>
+
+        <div class="test-section">
+            <h2>Teste em Tempo Real</h2>
+            <div class="input-group">
+                <input type="text" id="testInput" placeholder="Digite uma mensagem para testar o algoritmo..." onkeypress="if(event.key==='Enter')runTest()">
+                <button onclick="runTest()">Analisar</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('resumo')">Resumo</button>
+                <button class="tab" onclick="showTab('detalhes')">Detalhes</button>
+                <button class="tab" onclick="showTab('scores')">Scores</button>
+                <button class="tab" onclick="showTab('v3features')">v3.0 Features</button>
+                <button class="tab" onclick="showTab('raw')">JSON Raw</button>
+            </div>
+
+            <div id="resumo" class="tab-content active">
+                <div id="resultsSummary" class="results">Aguardando analise...</div>
+            </div>
+            <div id="detalhes" class="tab-content">
+                <div id="resultsDetails" class="results">Aguardando analise...</div>
+            </div>
+            <div id="scores" class="tab-content">
+                <div id="resultsScores" class="results">Aguardando analise...</div>
+            </div>
+            <div id="v3features" class="tab-content">
+                <div id="resultsV3" class="results">Aguardando analise...</div>
+            </div>
+            <div id="raw" class="tab-content">
+                <div id="resultsRaw" class="results">Aguardando analise...</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Metricas do Engine</h2>
+            <div class="metrics" id="metrics">
+                <div class="metric">
+                    <div class="metric-value" id="metricTests">0</div>
+                    <div class="metric-label">Testes Executados</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="metricAvgTime">0ms</div>
+                    <div class="metric-label">Tempo Medio</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="metricAccuracy">0%</div>
+                    <div class="metric-label">Precisao Media</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="metricIntents">0</div>
+                    <div class="metric-label">Intents Detectados</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Casos de Teste - Clique para testar</h2>
+
+            <h3 style="margin: 15px 0 10px; color: #666; font-size: 14px;">Categorias de App</h3>
+            <div class="test-cases">
+                <div class="test-case" onclick="testCase(this)">quero criar um app de delivery igual o ifood</div>
+                <div class="test-case" onclick="testCase(this)">preciso de uma loja virtual pra vender roupas</div>
+                <div class="test-case" onclick="testCase(this)">quero um app de cursos online tipo hotmart</div>
+                <div class="test-case" onclick="testCase(this)">app para minha clinica de estetica</div>
+                <div class="test-case" onclick="testCase(this)">sistema de agendamento pra barbearia</div>
+                <div class="test-case" onclick="testCase(this)">aplicativo pro meu petshop</div>
+            </div>
+
+            <h3 style="margin: 15px 0 10px; color: #666; font-size: 14px;">Perguntas sobre Preco</h3>
+            <div class="test-cases">
+                <div class="test-case" onclick="testCase(this)">quanto custa um app?</div>
+                <div class="test-case" onclick="testCase(this)">qual o valor do investimento?</div>
+                <div class="test-case" onclick="testCase(this)">qto fica pra fazer um app de delivery?</div>
+                <div class="test-case" onclick="testCase(this)">me passa o preco</div>
+            </div>
+
+            <h3 style="margin: 15px 0 10px; color: #666; font-size: 14px;">Perguntas sobre Prazo</h3>
+            <div class="test-cases">
+                <div class="test-case" onclick="testCase(this)">quanto tempo demora?</div>
+                <div class="test-case" onclick="testCase(this)">qual o prazo de entrega?</div>
+                <div class="test-case" onclick="testCase(this)">qnd fica pronto?</div>
+                <div class="test-case" onclick="testCase(this)">preciso urgente, da pra fazer rapido?</div>
+            </div>
+
+            <h3 style="margin: 15px 0 10px; color: #666; font-size: 14px;">Com Erros de Digitacao (Fuzzy Matching)</h3>
+            <div class="test-cases">
+                <div class="test-case" onclick="testCase(this)">quero um app de deliveri</div>
+                <div class="test-case" onclick="testCase(this)">preciso de ecomerce</div>
+                <div class="test-case" onclick="testCase(this)">app pra minha barbearia</div>
+                <div class="test-case" onclick="testCase(this)">sistma de agendamneto</div>
+            </div>
+
+            <h3 style="margin: 15px 0 10px; color: #666; font-size: 14px;">Com Abreviacoes (Expansao)</h3>
+            <div class="test-cases">
+                <div class="test-case" onclick="testCase(this)">vc faz app de delivery?</div>
+                <div class="test-case" onclick="testCase(this)">qto custa e qnd fica pronto?</div>
+                <div class="test-case" onclick="testCase(this)">tb tem garantia?</div>
+                <div class="test-case" onclick="testCase(this)">blz, qro saber + sobre vcs</div>
+            </div>
+
+            <h3 style="margin: 15px 0 10px; color: #666; font-size: 14px;">Frases Complexas (Multi-Intent)</h3>
+            <div class="test-cases">
+                <div class="test-case" onclick="testCase(this)">quero um app de delivery, quanto custa e qual o prazo?</div>
+                <div class="test-case" onclick="testCase(this)">preciso de uma loja online com carrinho e pagamento</div>
+                <div class="test-case" onclick="testCase(this)">app de saude com agendamento e prontuario</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Learning System (v3.0)</h2>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">
+                O sistema aprende com correções. Teste uma frase, depois corrija o intent para ver o aprendizado em ação.
+            </p>
+            <div class="input-group">
+                <select id="correctIntent" style="padding: 14px; border-radius: 12px; border: 2px solid #e5e7eb; flex: 1;">
+                    <option value="">Selecione o intent correto...</option>
+                    <option value="pergunta_preco">Pergunta sobre Preço</option>
+                    <option value="pergunta_prazo">Pergunta sobre Prazo</option>
+                    <option value="pergunta_features">Pergunta sobre Funcionalidades</option>
+                    <option value="pergunta_garantia">Pergunta sobre Garantia</option>
+                    <option value="pergunta_pagamento">Pergunta sobre Pagamento</option>
+                    <option value="criar_app">Criar um App</option>
+                    <option value="falar_humano">Falar com Humano</option>
+                </select>
+                <button onclick="teachCorrection()">Ensinar Correção</button>
+            </div>
+            <div class="metrics" style="margin-top: 15px;">
+                <div class="metric" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
+                    <div class="metric-value" id="learningCount">0</div>
+                    <div class="metric-label">Correções Aprendidas</div>
+                </div>
+            </div>
+            <button onclick="clearLearning()" style="margin-top: 10px; background: #ef4444;">Limpar Aprendizado</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Disambiguation Test (v3.0)</h2>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">
+                Teste frases ambíguas para ver o sistema de desambiguação em ação.
+            </p>
+            <div class="test-cases">
+                <div class="test-case" onclick="testCase(this)">quanto e quanto tempo</div>
+                <div class="test-case" onclick="testCase(this)">quero saber sobre valor e prazo</div>
+                <div class="test-case" onclick="testCase(this)">criar app ou ver funcionalidades</div>
+                <div class="test-case" onclick="testCase(this)">garantia e suporte</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Executar Bateria de Testes</h2>
+            <button onclick="runAllTests()" style="width: 100%;">Executar Todos os Testes</button>
+            <div id="batchResults" class="results" style="margin-top: 15px; display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="keywords-nichos.js"></script>
+    <script src="keywords-chat.js"></script>
+    <script src="nlu-engine.js"></script>
+    <script src="nlu-integration.js"></script>
+
+    <script>
+        // Metricas globais
+        let metrics = {
+            tests: 0,
+            totalTime: 0,
+            totalConfidence: 0,
+            intentsDetected: 0
+        };
+
+        // Última análise para correções
+        let lastAnalysis = null;
+        let lastInput = '';
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[onclick*="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function testCase(element) {
+            document.getElementById('testInput').value = element.textContent;
+            runTest();
+        }
+
+        function runTest() {
+            const input = document.getElementById('testInput').value;
+            if (!input.trim()) return;
+
+            if (!window.NLUEngine) {
+                alert('NLU Engine nao carregado!');
+                return;
+            }
+
+            const analysis = NLUEngine.processMessage(input);
+            lastAnalysis = analysis;
+            lastInput = input;
+
+            // Atualizar metricas
+            metrics.tests++;
+            metrics.totalTime += analysis.meta.processingTime;
+            metrics.totalConfidence += analysis.category.confidence;
+            if (analysis.intent.primary) metrics.intentsDetected++;
+
+            updateMetrics();
+            updateLearningCount();
+
+            // Resumo
+            let summaryHtml = '';
+            summaryHtml += `ENTRADA: "${input}"\n`;
+            summaryHtml += `${'='.repeat(60)}\n\n`;
+
+            if (analysis.category.detected) {
+                summaryHtml += `CATEGORIA: ${analysis.category.detected.toUpperCase()}\n`;
+                summaryHtml += `Confianca: ${analysis.category.confidence}%\n`;
+                summaryHtml += getConfidenceBar(analysis.category.confidence);
+            } else {
+                summaryHtml += `CATEGORIA: Nao identificada\n`;
+            }
+
+            summaryHtml += `\n`;
+
+            if (analysis.intent.primary) {
+                summaryHtml += `INTENCAO: ${analysis.intent.primary.intent}\n`;
+                summaryHtml += `Confianca: ${analysis.intent.primary.confidence}%\n`;
+                summaryHtml += `Match Type: ${analysis.intent.primary.matchType || 'N/A'}\n`;
+            }
+
+            if (analysis.entities.values.length > 0) {
+                summaryHtml += `\nVALORES ENCONTRADOS: ${analysis.entities.values.map(v => v.raw).join(', ')}\n`;
+            }
+
+            summaryHtml += `\nSENTIMENTO: ${analysis.sentiment.sentiment}`;
+            if (analysis.sentiment.urgency === 'high') {
+                summaryHtml += ` (URGENTE!)`;
+            }
+
+            summaryHtml += `\n\nCONFIANCA GERAL: ${analysis.overallConfidence || 'N/A'}%`;
+            summaryHtml += `\nVERSAO: ${analysis.meta.version || '2.0'}`;
+            summaryHtml += `\nTEMPO: ${analysis.meta.processingTime}ms`;
+
+            document.getElementById('resultsSummary').textContent = summaryHtml;
+
+            // Detalhes
+            let detailsHtml = '';
+            detailsHtml += `PROCESSAMENTO:\n`;
+            detailsHtml += `  Original: "${analysis.original}"\n`;
+            detailsHtml += `  Expandido: "${analysis.processed.expanded}"\n`;
+            detailsHtml += `  Normalizado: "${analysis.processed.normalized}"\n`;
+            detailsHtml += `  Tokens: [${analysis.processed.tokens.join(', ')}]\n`;
+            detailsHtml += `  Tokens Expandidos: [${analysis.processed.expandedTokens.join(', ')}]\n\n`;
+
+            detailsHtml += `N-GRAMS:\n`;
+            detailsHtml += `  Unigrams: [${analysis.processed.ngrams.unigrams.join(', ')}]\n`;
+            detailsHtml += `  Bigrams: [${analysis.processed.ngrams.bigrams.join(', ')}]\n`;
+            detailsHtml += `  Trigrams: [${analysis.processed.ngrams.trigrams.join(', ')}]\n\n`;
+
+            detailsHtml += `INTENCOES DETECTADAS:\n`;
+            analysis.intent.all.forEach((intent, i) => {
+                detailsHtml += `  ${i+1}. ${intent.intent}\n`;
+                detailsHtml += `     Score: ${intent.score?.toFixed(2)}, Confidence: ${intent.confidence}%\n`;
+                detailsHtml += `     Match Type: ${intent.matchType || 'N/A'}\n`;
+                detailsHtml += `     Patterns: ${intent.matchedPatterns?.join(', ') || 'N/A'}\n`;
+                if (intent.learned) detailsHtml += `     ✅ LEARNED CORRECTION\n`;
+                if (intent.contextBoost) detailsHtml += `     Context Boost: +${intent.contextBoost.toFixed(2)}\n`;
+                detailsHtml += `\n`;
+            });
+
+            document.getElementById('resultsDetails').textContent = detailsHtml;
+
+            // Scores
+            let scoresHtml = 'SCORES POR CATEGORIA:\n\n';
+            const sortedScores = Object.entries(analysis.category.allScores)
+                .sort((a, b) => b[1] - a[1]);
+
+            sortedScores.forEach(([cat, score]) => {
+                const bar = score > 0 ? '█'.repeat(Math.min(30, Math.round(score / 2))) : '';
+                const indicator = cat === analysis.category.detected ? ' ◀ DETECTADO' : '';
+                scoresHtml += `${cat.padEnd(15)} ${String(score).padStart(6)} ${bar}${indicator}\n`;
+            });
+
+            if (analysis.category.alternatives && analysis.category.alternatives.length > 0) {
+                scoresHtml += `\nALTERNATIVAS:\n`;
+                analysis.category.alternatives.forEach(alt => {
+                    scoresHtml += `  - ${alt.category}: ${alt.score}\n`;
+                });
+            }
+
+            document.getElementById('resultsScores').textContent = scoresHtml;
+
+            // v3.0 Features
+            let v3Html = 'FEATURES v3.0\n';
+            v3Html += '='.repeat(60) + '\n\n';
+
+            // Slot Filling
+            v3Html += '📦 SLOT FILLING:\n';
+            if (analysis.intent.primary?.slots) {
+                const slots = analysis.intent.primary.slots;
+                if (Object.keys(slots).length > 0) {
+                    for (const [key, value] of Object.entries(slots)) {
+                        v3Html += `   ${key}: ${JSON.stringify(value)}\n`;
+                    }
+                    v3Html += `   Slot Count: ${analysis.intent.primary.slotCount}\n`;
+                } else {
+                    v3Html += '   Nenhum slot preenchido\n';
+                }
+            } else {
+                v3Html += '   Nenhum slot preenchido\n';
+            }
+
+            // Disambiguation
+            v3Html += '\n🤔 DISAMBIGUATION:\n';
+            if (analysis.needsIntentDisambiguation && analysis.disambiguation) {
+                v3Html += `   Status: PRECISA DESAMBIGUAÇÃO\n`;
+                v3Html += `   Pergunta: ${analysis.disambiguation.question}\n`;
+                v3Html += `   Opções:\n`;
+                analysis.disambiguation.options.forEach(opt => {
+                    v3Html += `     - ${opt.text} (${opt.intent})\n`;
+                });
+            } else {
+                v3Html += '   Status: OK (sem ambiguidade)\n';
+            }
+
+            // Learning
+            v3Html += '\n🧠 LEARNING SYSTEM:\n';
+            const corrections = NLUEngine.getLearnedCorrections();
+            const corrCount = Object.keys(corrections).length;
+            v3Html += `   Correções aprendidas: ${corrCount}\n`;
+            if (analysis.intent.primary?.learned) {
+                v3Html += `   ✅ Este resultado foi MELHORADO por aprendizado!\n`;
+            }
+
+            // Confidence Calibration
+            v3Html += '\n📊 CONFIDENCE (Softmax Calibrated):\n';
+            v3Html += `   Overall Confidence: ${analysis.overallConfidence || 'N/A'}%\n`;
+            v3Html += `   Intent Confidence: ${analysis.intent.primary?.confidence || 0}%\n`;
+            v3Html += `   Category Confidence: ${analysis.category.confidence || 0}%\n`;
+
+            // Match Types
+            v3Html += '\n🎯 MATCH ANALYSIS:\n';
+            if (analysis.intent.primary) {
+                v3Html += `   Primary Match Type: ${analysis.intent.primary.matchType || 'exact'}\n`;
+                const regexMatches = analysis.intent.primary.matchedPatterns?.filter(p => p.startsWith('regex:')).length || 0;
+                const fuzzyMatches = analysis.intent.primary.matchedPatterns?.filter(p => p.startsWith('fuzzy:')).length || 0;
+                const exactMatches = (analysis.intent.primary.matchedPatterns?.length || 0) - regexMatches - fuzzyMatches;
+                v3Html += `   Regex Matches: ${regexMatches}\n`;
+                v3Html += `   Fuzzy Matches: ${fuzzyMatches}\n`;
+                v3Html += `   Exact Matches: ${exactMatches}\n`;
+            }
+
+            document.getElementById('resultsV3').textContent = v3Html;
+
+            // Raw JSON
+            document.getElementById('resultsRaw').textContent = JSON.stringify(analysis, null, 2);
+        }
+
+        // Learning System Functions
+        function teachCorrection() {
+            const correctIntent = document.getElementById('correctIntent').value;
+            if (!correctIntent) {
+                alert('Selecione o intent correto!');
+                return;
+            }
+            if (!lastInput || !lastAnalysis) {
+                alert('Primeiro execute um teste!');
+                return;
+            }
+
+            const wrongIntent = lastAnalysis.intent.primary?.intent;
+            if (wrongIntent === correctIntent) {
+                alert('O intent selecionado é o mesmo que foi detectado!');
+                return;
+            }
+
+            NLUEngine.learnFromCorrection(lastInput, wrongIntent || 'unknown', correctIntent);
+            updateLearningCount();
+            alert(`Correção aprendida!\n\nDe: ${wrongIntent || 'nenhum'}\nPara: ${correctIntent}\n\nAgora teste a mesma frase novamente para ver a melhoria!`);
+        }
+
+        function clearLearning() {
+            NLUEngine.clearLearnedCorrections();
+            updateLearningCount();
+            alert('Todas as correções foram apagadas!');
+        }
+
+        function updateLearningCount() {
+            const corrections = NLUEngine.getLearnedCorrections();
+            document.getElementById('learningCount').textContent = Object.keys(corrections).length;
+        }
+
+        function getConfidenceBar(confidence) {
+            const filled = Math.round(confidence / 5);
+            const empty = 20 - filled;
+            return `[${'█'.repeat(filled)}${'░'.repeat(empty)}] ${confidence}%\n`;
+        }
+
+        function updateMetrics() {
+            document.getElementById('metricTests').textContent = metrics.tests;
+            document.getElementById('metricAvgTime').textContent = Math.round(metrics.totalTime / metrics.tests) + 'ms';
+            document.getElementById('metricAccuracy').textContent = Math.round(metrics.totalConfidence / metrics.tests) + '%';
+            document.getElementById('metricIntents').textContent = metrics.intentsDetected;
+        }
+
+        function runAllTests() {
+            const testCases = [
+                // Categoria + esperado
+                { input: 'quero um app de delivery', expected: 'delivery' },
+                { input: 'loja virtual para vender', expected: 'ecommerce' },
+                { input: 'plataforma de cursos', expected: 'educacao' },
+                { input: 'app para clinica medica', expected: 'saude' },
+                { input: 'sistema para academia', expected: 'fitness' },
+                { input: 'app de agendamento barbearia', expected: 'servicos' },
+                { input: 'aplicativo pet shop', expected: 'pets' },
+                // Com erros
+                { input: 'deliveri de comida', expected: 'delivery' },
+                { input: 'ecomerce de roupas', expected: 'ecommerce' },
+                // Intents
+                { input: 'quanto custa', expectedIntent: 'pergunta_preco' },
+                { input: 'qual o prazo', expectedIntent: 'pergunta_prazo' },
+                { input: 'tem garantia', expectedIntent: 'pergunta_garantia' },
+            ];
+
+            let results = 'BATERIA DE TESTES\n';
+            results += '='.repeat(60) + '\n\n';
+
+            let passed = 0;
+            let failed = 0;
+
+            testCases.forEach((test, i) => {
+                const analysis = NLUEngine.processMessage(test.input);
+                let success = false;
+
+                if (test.expected) {
+                    success = analysis.category.detected === test.expected;
+                } else if (test.expectedIntent) {
+                    success = analysis.intent.primary?.intent === test.expectedIntent;
+                }
+
+                if (success) {
+                    passed++;
+                    results += `✅ PASSOU: "${test.input}"\n`;
+                    results += `   Detectado: ${analysis.category.detected || analysis.intent.primary?.intent}\n\n`;
+                } else {
+                    failed++;
+                    results += `❌ FALHOU: "${test.input}"\n`;
+                    results += `   Esperado: ${test.expected || test.expectedIntent}\n`;
+                    results += `   Obtido: ${analysis.category.detected || analysis.intent.primary?.intent || 'null'}\n\n`;
+                }
+            });
+
+            results += '='.repeat(60) + '\n';
+            results += `RESULTADO: ${passed}/${testCases.length} testes passaram (${Math.round(passed/testCases.length*100)}%)\n`;
+
+            document.getElementById('batchResults').style.display = 'block';
+            document.getElementById('batchResults').textContent = results;
+        }
+
+        // Executar teste inicial
+        window.onload = function() {
+            if (window.NLUEngine) {
+                updateLearningCount();
+                document.getElementById('testInput').value = 'quero criar um app de delivery';
+                runTest();
+                console.log('NLU Engine v3.0 carregado com sucesso!');
+                console.log('Novas features: Regex, TF-IDF, Slot Filling, Learning, Disambiguation, Softmax');
+            }
+        };
+    </script>
+</body>
+</html>
