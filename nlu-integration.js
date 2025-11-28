@@ -1238,9 +1238,16 @@ const NLUIntegration = (function() {
 
         const analysis = nluResult.analysis?.analysis || nluResult.analysis || {};
 
+        // Mesclar informações do usuário (passadas via options ou do contexto interno)
+        const userInfo = { ...conversationContext.userInfo, ...(options.userInfo || {}) };
+
         // Contexto enriquecido para Groq
         const groqContext = {
-            userName: conversationContext.userInfo.name,
+            userName: userInfo.userName || userInfo.name,
+            budget: userInfo.budget,
+            timeline: userInfo.timeline,
+            appType: userInfo.appType,
+            features: userInfo.features || [],
             category: analysis.category?.detected,
             intent: analysis.intent?.primary?.intent,
             confidence: analysis.overallConfidence,
