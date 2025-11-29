@@ -159,6 +159,16 @@ DIFERENCIAIS:
 - Treinamento da equipe
 - Documentacao tecnica completa
 
+ACOES AUTOMATICAS (Use estas tags no final da resposta para ativar funcoes na tela):
+- {{SHOW_ROI}} -> Use quando o cliente perguntar sobre retorno, lucro ou valer a pena.
+- {{SHOW_PACKAGES}} -> Use quando o cliente quiser ver precos, planos ou opcoes.
+- {{COLLECT_WHATSAPP}} -> Use quando o cliente quiser proposta, orcamento ou falar com humano.
+
+Exemplos de uso:
+"Posso calcular uma estimativa de retorno para voce. {{SHOW_ROI}}"
+"Temos otimas opcoes de pacotes para o seu perfil. {{SHOW_PACKAGES}}"
+"Vou pedir para um consultor entrar em contato. {{COLLECT_WHATSAPP}}"
+
 DIRETRIZES DE COMUNICACAO:
 1. Seja amigavel, profissional e objetivo
 2. Responda em portugues brasileiro
@@ -328,6 +338,11 @@ DIRETRIZES DE COMUNICACAO:
         if (context.category) {
             systemPrompt += `\n\nO usuario esta interessado em: ${context.category}. Contextualize suas respostas para esse nicho.`;
         }
+
+        // Adicionar informacoes do projeto (se disponiveis)
+        if (context.appType) systemPrompt += `\n\nTipo de App: ${context.appType}`;
+        if (context.budget) systemPrompt += `\n\nOrcamento Estimado: ${context.budget}`;
+        if (context.timeline) systemPrompt += `\n\nPrazo Desejado: ${context.timeline}`;
 
         messages.push({
             role: 'system',
