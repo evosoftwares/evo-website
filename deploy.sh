@@ -154,6 +154,12 @@ fi
 
 print_header "4. MINIFICANDO CSS E JAVASCRIPT"
 
+if [ -f "generate_mobile_css.py" ]; then
+    print_info "Gerando mobile.css..."
+    python3 generate_mobile_css.py
+    print_success "mobile.css gerado"
+fi
+
 if [ -f "minify-all.sh" ]; then
     print_info "Executando minify-all.sh..."
     bash minify-all.sh
@@ -258,6 +264,7 @@ print_info "Criando lista de arquivos para deploy..."
 cat > deploy_files.txt << EOF
 # Arquivos HTML
 index.html
+mobile.html
 about.html
 portfolio.html
 materiais.html
@@ -270,6 +277,7 @@ registro-marca.html
 
 # CSS e JS
 styles.css
+mobile.css
 script.js
 blog-detalhes.js
 data-visualization.css
