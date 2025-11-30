@@ -258,6 +258,7 @@ print_info "Criando lista de arquivos para deploy..."
 cat > deploy_files.txt << EOF
 # Arquivos HTML
 index.html
+mobile.html
 about.html
 portfolio.html
 materiais.html

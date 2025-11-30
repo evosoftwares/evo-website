@@ -899,7 +899,7 @@ function initNavbarEffects() {
 
             if (currentPage === 'home') {
                 // On home page, mark Home link as active
-                if (href === '#home' || href === 'index.html' || href === 'index.html#home') {
+                if (href === '#home' || href === 'index.html' || href === 'index.html#home' || href === 'mobile.html' || href === 'mobile.html#home') {
                     link.classList.add('active');
                 }
             } else if (currentPage === 'about' && href === 'about.html') {
@@ -947,7 +947,7 @@ function initNavbarEffects() {
                     link.classList.add('active');
                 }
                 // If no section is current, mark home link as active
-                else if (!current && (href === '#home' || href === 'index.html#home')) {
+                else if (!current && (href === '#home' || href === 'index.html#home' || href === 'mobile.html#home')) {
                     link.classList.add('active');
                 }
             });
