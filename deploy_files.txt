@@ -1,0 +1,42 @@
+# Arquivos HTML
+index.html
+about.html
+portfolio.html
+materiais.html
+gamificacao.html
+blog-detalhes.html
+suporte.html
+lgpd.html
+privacy.html
+registro-marca.html
+
+# CSS e JS
+styles.css
+script.js
+blog-detalhes.js
+data-visualization.css
+data-visualization.js
+
+# Imagens originais (fallback)
+image 1.png
+image 2.png
+mulhernahero.png
+favicon.svg
+image05 1.svg
+*.png
+
+# Imagens otimizadas
+optimized/
+
+# Minificados (opcional)
+dist/
+
+# SEO
+sitemap.xml
+robots.txt
+
+# Servidor
+.htaccess
+
+# Chat (se usar)
+chat-orcamento/
