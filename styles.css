@@ -2309,8 +2309,8 @@ h1, h2, h3, h4, h5, h6 {
 /* Partners - Mobile Stack */
 .partners-container-main {
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: var(--spacing-md);
+    justify-content: center;
+    gap: var(--spacing-lg);
 }
 
 /* Stats - Oculto no mobile (será mostrado apenas em 768px+) */
@@ -2321,13 +2321,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .possibilities-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: var(--spacing-2xl);
 }
 
-/* Services - Horizontal Layout on All Screens */
+/* Services - Vertical Layout on Mobile */
 @media (max-width: 768px) {
     .services-grid {
+        grid-template-columns: 1fr;
         gap: var(--spacing-lg);
     }
 }
@@ -4938,6 +4939,45 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Mobile (480px and below) */
 @media (max-width: 480px) {
+    h1, .hero-title {
+        font-size: 42px;
+    }
+
+    .section-title-center,
+    h2, .section-title {
+        font-size: 36px;
+    }
+
+    .hero,
+    .possibilities,
+    .stats,
+    .portfolio,
+    .testimonials,
+    .services,
+    .blog,
+    .contact,
+    .team-highlights,
+    .history-section,
+    .values-section,
+    .team-stats,
+    .why-choose-us,
+    .impact-section,
+    .featured-projects,
+    .all-projects,
+    .portfolio-stats,
+    .case-study-spotlight,
+    .blog-filters-section,
+    .blog-articles,
+    .newsletter-section {
+        padding: var(--spacing-3xl) 0;
+    }
+
+    .cta-about-section,
+    .cta-portfolio-section,
+    .cta-materiais-section {
+        padding: var(--spacing-3xl) var(--container-padding);
+    }
+
     .footer {
         padding: 48px 0 0;
     }
