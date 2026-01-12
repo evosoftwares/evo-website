@@ -43,6 +43,13 @@
     </url>
 
     <url>
+        <loc>https://www.evo.com.br/contato.html</loc>
+        <lastmod>2026-01-12</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
         <loc>https://www.evo.com.br/suporte.html</loc>
         <lastmod>2025-11-19</lastmod>
         <changefreq>monthly</changefreq>
@@ -71,4 +78,54 @@
         <priority>0.6</priority>
     </url>
 
+
+    <!-- Blog Articles (Auto-generated) -->
+    <url>
+        <loc>https://www.evo.com.br/blog/design-thinking-criando-apps-que-resolvem-problemas-reais.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.evo.com.br/blog/react-native-vs-flutter-qual-escolher-em-2024.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.evo.com.br/blog/de-ideia-a-mvp-como-validar-seu-app-em-30-dias.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.evo.com.br/blog/r-6-50-de-retorno-para-cada-r-1-00-investido-o-poder-dos-micro-influenciadores.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.evo.com.br/blog/300-mil-downloads-organicos-por-ano-o-segredo-do-aso-que-ninguem-te-conta.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.evo.com.br/blog/como-gamificacao-aumentou-retencao-em-75-o-guia-definitivo-para-apps-viciantes.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.evo.com.br/blog/parcerias-estrategicas-como-apps-multiplicam-downloads-sem-gastar-em-ads.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://www.evo.com.br/blog/performance-marketing-em-2025-cpi-no-brasil-esta-ate-40-mais-barato-se-voce-souber-onde.html</loc>
+        <lastmod>2026-01-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 </urlset>

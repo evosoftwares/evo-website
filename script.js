@@ -51,7 +51,7 @@ function removeSuccessMessageAfterDelay(element, delay = 5000) {
 }
 
 // DOM Content Loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initMobileMenu();
     initLazyLoading();
     initSmoothScroll();
@@ -112,11 +112,11 @@ function initTouchOptimizations() {
         const cards = document.querySelectorAll('.possibility-card, .service-card, .testimonial-card, .blog-card');
 
         cards.forEach(card => {
-            card.addEventListener('touchstart', function() {
+            card.addEventListener('touchstart', function () {
                 this.style.transform = 'scale(0.98)';
             });
 
-            card.addEventListener('touchend', function() {
+            card.addEventListener('touchend', function () {
                 this.style.transform = '';
             });
         });
@@ -124,7 +124,7 @@ function initTouchOptimizations() {
         // Prevent double-tap zoom on buttons
         const buttons = document.querySelectorAll('.btn, button');
         buttons.forEach(btn => {
-            btn.addEventListener('touchend', function(e) {
+            btn.addEventListener('touchend', function (e) {
                 e.preventDefault();
                 this.click();
             }, { passive: false });
@@ -142,7 +142,7 @@ function initLoadMoreProjects() {
         return;
     }
 
-    loadMoreBtn.addEventListener('click', function(e) {
+    loadMoreBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
         // Show all hidden projects with animation
@@ -199,152 +199,21 @@ function initBlogFilters() {
     });
 }
 
-// Additional Articles Data
-const additionalArticles = [
-    {
-        id: 6,
-        title: 'Segurança em Apps Mobile: Boas Práticas Essenciais',
-        description: 'Aprenda as principais práticas de segurança para proteger dados dos usuários. Criptografia, autenticação e mais.',
-        category: 'tendências',
-        author: 'Pedro Costa',
-        date: '5 de outubro',
-        readTime: '9 min de leitura',
-        image: 'https://images.unsplash.com/photo-1563986768609-322d6d60df60?w=400&h=300&fit=crop',
-        alt: 'Segurança em Apps'
-    },
-    {
-        id: 7,
-        title: 'Performance: Otimizando Seu App para iOS e Android',
-        description: 'Dicas práticas para melhorar a performance do seu aplicativo e reduzir consumo de bateria e memória.',
-        category: 'desenvolvimento',
-        author: 'Lucas Ferreira',
-        date: '2 de outubro',
-        readTime: '10 min de leitura',
-        image: 'https://images.unsplash.com/photo-1526374965328-7f5ae4e8b08e?w=400&h=300&fit=crop',
-        alt: 'Performance de Apps'
-    },
-    {
-        id: 8,
-        title: 'UX/UI Trends 2025: O Futuro do Design de Apps',
-        description: 'Conheça as tendências mais quentes em design de interfaces e experiência do usuário para os próximos anos.',
-        category: 'design',
-        author: 'Beatriz Silva',
-        date: '28 de setembro',
-        readTime: '7 min de leitura',
-        image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=300&fit=crop',
-        alt: 'UX UI Trends'
-    },
-    {
-        id: 9,
-        title: 'Monetização de Apps: Estratégias Que Funcionam',
-        description: 'Explore diferentes modelos de monetização: ads, in-app purchases, subscriptions e muito mais.',
-        category: 'negócios',
-        author: 'Roberto Alves',
-        date: '25 de setembro',
-        readTime: '8 min de leitura',
-        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-        alt: 'Monetização de Apps'
-    },
-    {
-        id: 10,
-        title: '🚀 R$ 6,50 de Retorno para Cada R$ 1,00 Investido: O Poder dos Micro Influenciadores',
-        description: 'DADOS EXCLUSIVOS 2025: Brasil lidera com 3,8 milhões de criadores! 82% têm menos de 10k seguidores e geram ROI 11x maior que banners. Descubra por que 44% das marcas brasileiras escolhem nano influenciadores.',
-        category: 'marketing',
-        author: 'Mariana Santos',
-        date: '20 de novembro',
-        readTime: '7 min de leitura',
-        image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=300&fit=crop',
-        alt: 'Marketing de Influência',
-        stats: {
-            roi: '6.50',
-            creators: '3.8M',
-            preference: '44%',
-            marketSize: 'US$ 31.2bi até 2027'
-        }
-    },
-    {
-        id: 11,
-        title: '🔍 Brasil: 4º Maior Mercado Mundial! Como Capturar 50%+ de Downloads Orgânicos',
-        description: 'ESTUDO 2024: 10 bilhões de downloads no Brasil! Top 3 posições capturam metade de TODOS os downloads. Apps com palavras-chave longas cresceram +32%. Aprenda o framework ASO que coloca seu app no topo sem gastar R$ 1 em anúncios.',
-        category: 'marketing',
-        author: 'Felipe Rodrigues',
-        date: '18 de novembro',
-        readTime: '9 min de leitura',
-        image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8f2c293?w=400&h=300&fit=crop',
-        alt: 'App Store Optimization',
-        stats: {
-            downloads: '10bi/ano',
-            organic: '50%+',
-            growth: '+32%',
-            ranking: '4º mercado global'
-        }
-    },
-    {
-        id: 12,
-        title: '🎮 ALERTA: 90% Abandonam em 30 Dias! Como Gamificação Salva Seu App',
-        description: 'PESQUISA BRASIL 2025: Reter é 5x mais barato que adquirir. 93% dos marketers aprovam gamificação e 45% das marcas investem agora. US$ 1,67bi em remarketing! Descubra os 7 gatilhos que multiplicam retenção e receita.',
-        category: 'desenvolvimento',
-        author: 'Júlia Mendes',
-        date: '15 de novembro',
-        readTime: '8 min de leitura',
-        image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop',
-        alt: 'Gamificação em Apps',
-        stats: {
-            abandonment: '90%',
-            costDiff: '5x mais caro adquirir',
-            adoption: '93% aprovam',
-            investment: 'US$ 1.67bi remarketing'
-        }
-    },
-    {
-        id: 13,
-        title: '🤝 US$ 2,85 Bilhões Investidos no Brasil! Como Crescer Gastando 80% Menos',
-        description: 'REVELADO 2024: Brasil é 4º maior mercado global! Apps de alimentação cresceram +923% no iOS. Finanças triplicaram investimentos. Aprenda a estratégia de parcerias locais que apps inteligentes usam para crescer gastando 80% menos.',
-        category: 'negócios',
-        author: 'Carlos Eduardo',
-        date: '12 de novembro',
-        readTime: '6 min de leitura',
-        image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&h=300&fit=crop',
-        alt: 'Parcerias Estratégicas',
-        stats: {
-            investment: 'US$ 2.85bi',
-            foodGrowth: '+923% iOS',
-            financeGrowth: '3x investimento',
-            ranking: '4º mercado mundial'
-        }
-    },
-    {
-        id: 14,
-        title: '💰 R$ 0,44 por Instalação no Brasil! iOS Explodiu +168% em 2024',
-        description: 'DADOS EXCLUSIVOS: CPI Brasil é 12x MENOR que EUA/UK! iOS cresceu +168%, Android -22%. TikTok: $1,75-$4/install. Meta: $2,60. Google com lances estratégicos. O guia completo de performance marketing que escala com ROI positivo.',
-        category: 'marketing',
-        author: 'Amanda Costa',
-        date: '10 de novembro',
-        readTime: '10 min de leitura',
-        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-        alt: 'Performance Marketing',
-        stats: {
-            cpiBrasil: 'R$ 0.44',
-            iosGrowth: '+168%',
-            tiktokCPI: '$1.75-$4',
-            metaCPI: '$2.60'
-        }
-    }
-];
-
-let articlesLoaded = 0;
-const articlesPerPage = 6;
-
-// Load More Articles Functionality
+// Load More Articles Functionality (Static)
 function initLoadMoreArticles() {
     const loadMoreBtn = document.getElementById('loadMoreArticlesBtn');
-    const articlesGrid = document.getElementById('articlesGrid');
 
-    if (!loadMoreBtn || !articlesGrid) {
+    // Check if there are hidden articles initially
+    const hiddenArticles = document.querySelectorAll('.article-card.hidden');
+
+    if (!loadMoreBtn) return;
+
+    if (hiddenArticles.length === 0) {
+        loadMoreBtn.style.display = 'none';
         return;
     }
 
-    loadMoreBtn.addEventListener('click', function(e) {
+    loadMoreBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
         // Change button state
@@ -353,113 +222,44 @@ function initLoadMoreArticles() {
         loadMoreBtn.style.opacity = '0.6';
         loadMoreBtn.innerHTML = 'Carregando... <span class="spinner"></span>';
 
-        // Simulate loading delay (in real app, this would be an API call)
+        // Simulate loading delay for better UX
         setTimeout(() => {
-            loadMoreArticles(articlesGrid);
+            const hidden = document.querySelectorAll('.article-card.hidden');
+            const toShow = Array.from(hidden).slice(0, 3);
+
+            toShow.forEach(card => {
+                card.classList.remove('hidden');
+                card.style.display = ''; // Remove inline style display:none
+                card.style.animation = 'fadeIn 0.5s ease forwards';
+            });
 
             // Restore button state
             loadMoreBtn.innerHTML = originalText;
             loadMoreBtn.style.opacity = '1';
+            loadMoreBtn.disabled = false;
 
             // Check if there are more articles to load
-            if (articlesLoaded >= additionalArticles.length) {
-                loadMoreBtn.disabled = true;
-                loadMoreBtn.style.opacity = '0.5';
-                loadMoreBtn.innerHTML = 'Nenhum artigo mais para carregar';
-                loadMoreBtn.style.cursor = 'default';
-            } else {
-                loadMoreBtn.disabled = false;
+            if (document.querySelectorAll('.article-card.hidden').length === 0) {
+                loadMoreBtn.style.display = 'none';
             }
 
-            }, 800);
+        }, 600);
     });
 }
 
-function loadMoreArticles(grid) {
-    // Load up to 3 more articles
-    const articlesToLoad = Math.min(3, additionalArticles.length - articlesLoaded);
-
-    for (let i = 0; i < articlesToLoad; i++) {
-        const article = additionalArticles[articlesLoaded];
-
-        const articleHTML = `
-            <div class="article-card clickable" data-category="${article.category}" data-article-id="${article.id}">
-                <div class="article-image">
-                    <img src="${article.image}" alt="${article.alt}" width="400" height="300" loading="lazy">
-                    <div class="article-overlay">
-                        <span class="article-category">${capitalizeCategory(article.category)}</span>
-                    </div>
-                </div>
-                <div class="article-content">
-                    <h3 class="article-title">${article.title}</h3>
-                    <p class="article-description">${article.description}</p>
-                    <div class="article-meta">
-                        <span class="meta-author">Por ${article.author}</span>
-                        <span class="meta-date">${article.date}</span>
-                        <span class="meta-read">${article.readTime}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        grid.insertAdjacentHTML('beforeend', articleHTML);
-        articlesLoaded++;
-
-        // Re-initialize article navigation for newly added articles
-        initArticleNavigation();
-    }
-}
-
-function capitalizeCategory(category) {
-    const categories = {
-        'design': 'Design',
-        'desenvolvimento': 'Desenvolvimento',
-        'negócios': 'Negócios',
-        'marketing': 'Marketing',
-        'tendências': 'Tendências'
-    };
-    return categories[category] || category;
-}
-
-// Article Navigation Functionality
 function initArticleNavigation() {
-    const articleCards = document.querySelectorAll('.article-card.clickable');
-
-    articleCards.forEach(card => {
-        // Remove any existing event listeners by cloning the node
-        const newCard = card.cloneNode(true);
-        card.parentNode?.replaceChild(newCard, card);
-
-        // Add click event listener
-        newCard.addEventListener('click', function() {
-            const articleId = this.getAttribute('data-article-id');
-            if (articleId) {
-                window.location.href = `blog-detalhes.html?id=${articleId}`;
-            }
-        });
-
-        // Add keyboard accessibility
-        newCard.setAttribute('tabindex', '0');
-        newCard.setAttribute('role', 'link');
-
-        newCard.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                const articleId = this.getAttribute('data-article-id');
-                if (articleId) {
-                    window.location.href = `blog-detalhes.html?id=${articleId}`;
-                }
-            }
-        });
-    });
+    // Legacy function kept for compatibility if needed, but logic is now handled by standard <a> tags.
+    // We can leave it empty or remove usage.
+    return;
 }
+
 
 // Newsletter Form Functionality
 function initNewsletterForm() {
     const newsletterForm = document.getElementById('newsletterForm');
 
     if (newsletterForm) {
-        newsletterForm.addEventListener('submit', function(e) {
+        newsletterForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             const emailInput = document.getElementById('newsletterEmail');
@@ -618,7 +418,7 @@ function initInputMasks() {
     // Formatter para Message (controle avançado)
     const messageInput = document.getElementById('messageInput');
     if (messageInput) {
-        messageInput.addEventListener('input', function() {
+        messageInput.addEventListener('input', function () {
             // Limita ao máximo de caracteres
             if (this.value.length > VALIDATION_CONFIG.MESSAGE_MAX_LENGTH) {
                 this.value = this.value.substring(0, VALIDATION_CONFIG.MESSAGE_MAX_LENGTH);
@@ -806,7 +606,7 @@ function initContactForm() {
     const contactForm = document.getElementById('contactForm');
 
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             // Validar todos os campos antes de enviar
@@ -851,7 +651,7 @@ function initScrollAnimations() {
         rootMargin: '0px 0px -100px 0px'
     };
 
-    const observer = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver(function (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
@@ -1072,149 +872,149 @@ function initSlideshows() {
 
     // Portfolio Slideshow
     if (portfolioWrapper) {
-    try {
-        const portfolioSwiper = new Swiper('.portfolio-slideshow-wrapper', {
-            slidesPerView: 'auto',
-            spaceBetween: window.innerWidth < 768 ? 16 : 32,
-            speed: 750,
-            loop: true,
-            grabCursor: true,
-            allowTouchMove: true,
-            centeredSlides: window.innerWidth < 768,
-            autoplay: {
-                delay: 1000,
-                disableOnInteraction: true,
-                pauseOnMouseEnter: true,
-            },
-            // Mobile-specific settings
-            touchRatio: 1,
-            touchAngle: 45,
-            threshold: 5,
-            shortSwipes: true,
-            longSwipesMs: 300,
-            freeMode: false,
-            // Smooth transitions
-            effect: 'slide',
-            watchSlidesProgress: true,
-            // Performance
-            observer: true,
-            observeParents: true,
-        });
-
-        // Navigation buttons
-        const portfolioPrevBtn = document.querySelector('.portfolio-prev');
-        const portfolioNextBtn = document.querySelector('.portfolio-next');
-
-        if (portfolioPrevBtn && portfolioNextBtn) {
-            portfolioPrevBtn.addEventListener('click', () => {
-                portfolioSwiper.autoplay.stop();
-                portfolioSwiper.slidePrev();
+        try {
+            const portfolioSwiper = new Swiper('.portfolio-slideshow-wrapper', {
+                slidesPerView: 'auto',
+                spaceBetween: window.innerWidth < 768 ? 16 : 32,
+                speed: 750,
+                loop: true,
+                grabCursor: true,
+                allowTouchMove: true,
+                centeredSlides: window.innerWidth < 768,
+                autoplay: {
+                    delay: 1000,
+                    disableOnInteraction: true,
+                    pauseOnMouseEnter: true,
+                },
+                // Mobile-specific settings
+                touchRatio: 1,
+                touchAngle: 45,
+                threshold: 5,
+                shortSwipes: true,
+                longSwipesMs: 300,
+                freeMode: false,
+                // Smooth transitions
+                effect: 'slide',
+                watchSlidesProgress: true,
+                // Performance
+                observer: true,
+                observeParents: true,
             });
 
-            portfolioNextBtn.addEventListener('click', () => {
-                portfolioSwiper.autoplay.stop();
-                portfolioSwiper.slideNext();
-            });
+            // Navigation buttons
+            const portfolioPrevBtn = document.querySelector('.portfolio-prev');
+            const portfolioNextBtn = document.querySelector('.portfolio-next');
+
+            if (portfolioPrevBtn && portfolioNextBtn) {
+                portfolioPrevBtn.addEventListener('click', () => {
+                    portfolioSwiper.autoplay.stop();
+                    portfolioSwiper.slidePrev();
+                });
+
+                portfolioNextBtn.addEventListener('click', () => {
+                    portfolioSwiper.autoplay.stop();
+                    portfolioSwiper.slideNext();
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing Portfolio Swiper:', error);
         }
-    } catch (error) {
-        console.error('Error initializing Portfolio Swiper:', error);
-    }
     }
 
     // Testimonials Slideshow
     if (testimonialsWrapper) {
-    try {
-        const testimonialsSwiper = new Swiper('.testimonials-slideshow-wrapper', {
-            slidesPerView: 'auto',
-            spaceBetween: window.innerWidth < 768 ? 16 : 24,
-            speed: 750,
-            loop: true,
-            grabCursor: true,
-            allowTouchMove: true,
-            centeredSlides: window.innerWidth < 768,
-            autoplay: {
-                delay: 1000,
-                disableOnInteraction: true,
-                pauseOnMouseEnter: true,
-            },
-            // Mobile optimizations
-            touchRatio: 1,
-            touchAngle: 45,
-            threshold: 5,
-            shortSwipes: true,
-            longSwipesMs: 300,
-            effect: 'slide',
-            watchSlidesProgress: true,
-            observer: true,
-            observeParents: true,
-        });
-
-        // Navigation buttons
-        const testimonialsPrevBtn = document.querySelector('.testimonials-prev');
-        const testimonialsNextBtn = document.querySelector('.testimonials-next');
-
-        if (testimonialsPrevBtn && testimonialsNextBtn) {
-            testimonialsPrevBtn.addEventListener('click', () => {
-                testimonialsSwiper.autoplay.stop();
-                testimonialsSwiper.slidePrev();
+        try {
+            const testimonialsSwiper = new Swiper('.testimonials-slideshow-wrapper', {
+                slidesPerView: 'auto',
+                spaceBetween: window.innerWidth < 768 ? 16 : 24,
+                speed: 750,
+                loop: true,
+                grabCursor: true,
+                allowTouchMove: true,
+                centeredSlides: window.innerWidth < 768,
+                autoplay: {
+                    delay: 1000,
+                    disableOnInteraction: true,
+                    pauseOnMouseEnter: true,
+                },
+                // Mobile optimizations
+                touchRatio: 1,
+                touchAngle: 45,
+                threshold: 5,
+                shortSwipes: true,
+                longSwipesMs: 300,
+                effect: 'slide',
+                watchSlidesProgress: true,
+                observer: true,
+                observeParents: true,
             });
 
-            testimonialsNextBtn.addEventListener('click', () => {
-                testimonialsSwiper.autoplay.stop();
-                testimonialsSwiper.slideNext();
-            });
+            // Navigation buttons
+            const testimonialsPrevBtn = document.querySelector('.testimonials-prev');
+            const testimonialsNextBtn = document.querySelector('.testimonials-next');
+
+            if (testimonialsPrevBtn && testimonialsNextBtn) {
+                testimonialsPrevBtn.addEventListener('click', () => {
+                    testimonialsSwiper.autoplay.stop();
+                    testimonialsSwiper.slidePrev();
+                });
+
+                testimonialsNextBtn.addEventListener('click', () => {
+                    testimonialsSwiper.autoplay.stop();
+                    testimonialsSwiper.slideNext();
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing Testimonials Swiper:', error);
         }
-    } catch (error) {
-        console.error('Error initializing Testimonials Swiper:', error);
-    }
     }
 
     // Blog Slideshow
     if (blogWrapper) {
-    try {
-        const blogSwiper = new Swiper('.blog-slideshow-wrapper', {
-            slidesPerView: 'auto',
-            spaceBetween: window.innerWidth < 768 ? 16 : 24,
-            speed: 750,
-            loop: true,
-            grabCursor: true,
-            allowTouchMove: true,
-            centeredSlides: window.innerWidth < 768,
-            autoplay: {
-                delay: 1000,
-                disableOnInteraction: true,
-                pauseOnMouseEnter: true,
-            },
-            // Mobile optimizations
-            touchRatio: 1,
-            touchAngle: 45,
-            threshold: 5,
-            shortSwipes: true,
-            longSwipesMs: 300,
-            effect: 'slide',
-            watchSlidesProgress: true,
-            observer: true,
-            observeParents: true,
-        });
-
-        // Navigation buttons
-        const prevBtn = document.querySelector('.blog-prev');
-        const nextBtn = document.querySelector('.blog-next');
-
-        if (prevBtn && nextBtn) {
-            prevBtn.addEventListener('click', () => {
-                blogSwiper.autoplay.stop();
-                blogSwiper.slidePrev();
+        try {
+            const blogSwiper = new Swiper('.blog-slideshow-wrapper', {
+                slidesPerView: 'auto',
+                spaceBetween: window.innerWidth < 768 ? 16 : 24,
+                speed: 750,
+                loop: true,
+                grabCursor: true,
+                allowTouchMove: true,
+                centeredSlides: window.innerWidth < 768,
+                autoplay: {
+                    delay: 1000,
+                    disableOnInteraction: true,
+                    pauseOnMouseEnter: true,
+                },
+                // Mobile optimizations
+                touchRatio: 1,
+                touchAngle: 45,
+                threshold: 5,
+                shortSwipes: true,
+                longSwipesMs: 300,
+                effect: 'slide',
+                watchSlidesProgress: true,
+                observer: true,
+                observeParents: true,
             });
 
-            nextBtn.addEventListener('click', () => {
-                blogSwiper.autoplay.stop();
-                blogSwiper.slideNext();
-            });
+            // Navigation buttons
+            const prevBtn = document.querySelector('.blog-prev');
+            const nextBtn = document.querySelector('.blog-next');
+
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener('click', () => {
+                    blogSwiper.autoplay.stop();
+                    blogSwiper.slidePrev();
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    blogSwiper.autoplay.stop();
+                    blogSwiper.slideNext();
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing Blog Swiper:', error);
         }
-    } catch (error) {
-        console.error('Error initializing Blog Swiper:', error);
-    }
     }
 }
 
