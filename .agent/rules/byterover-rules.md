@@ -1,4 +1,6 @@
-[byterover-mcp]
+---
+trigger: always_on
+---
 
 [byterover-mcp]
 

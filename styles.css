@@ -582,6 +582,29 @@ body.menu-open {
     color: var(--color-text-light);
 }
 
+.hero-proof {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: 0;
+    margin: var(--spacing-md) 0 var(--spacing-lg);
+    color: var(--color-text-medium);
+    font-size: var(--font-size-sm);
+}
+
+.hero-proof li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.hero-proof i {
+    font-size: 18px;
+    color: var(--color-primary);
+}
+
 /* Centered Tagline */
 .centered-tagline {
     width: 100%;
@@ -656,6 +679,21 @@ body.menu-open {
     height: auto;
     display: block;
     max-width: 100%;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: var(--spacing-3xl) 0;
+    }
+
+    .hero-proof {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cta-buttons {
+        gap: var(--spacing-md);
+    }
 }
 
 /* Partners Section */
@@ -758,6 +796,101 @@ body.menu-open {
     width: 100%;
     padding: var(--spacing-5xl) 0;
     background: var(--color-bg-section);
+}
+
+/* Process Section */
+.process {
+    width: 100%;
+    padding: var(--spacing-5xl) 0;
+    background: var(--color-white);
+}
+
+.process-container {
+    width: 100%;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+    text-align: left;
+}
+
+.process-subtitle {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-light);
+    line-height: var(--line-height-relaxed);
+    margin-top: var(--spacing-sm);
+    max-width: 720px;
+}
+
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-3xl);
+}
+
+@media (max-width: 1024px) {
+    .process-steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .process-steps {
+        grid-template-columns: 1fr;
+    }
+}
+
+.process-card {
+    background: var(--color-bg-light);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xl);
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.process-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.process-step {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-muted);
+}
+
+.process-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, rgba(0, 93, 254, 0.08) 0%, rgba(0, 102, 255, 0.12) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.process-icon i {
+    font-size: 28px;
+    color: var(--color-primary);
+}
+
+.process-title {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-text-medium);
+    margin: 0;
+}
+
+.process-text {
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    line-height: var(--line-height-relaxed);
+    margin: 0;
 }
 
 /* Stats Section */
@@ -5037,6 +5170,45 @@ h1, h2, h3, h4, h5, h6 {
 /* ================================
    CHAT FAB
    ================================ */
+
+/* Mobile CTA Bar */
+.mobile-cta-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: var(--spacing-sm) var(--container-padding);
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.08);
+    z-index: var(--z-fixed);
+    display: none;
+}
+
+.mobile-cta-bar .btn {
+    width: 100%;
+    max-width: none;
+    justify-content: center;
+}
+
+body.menu-open .mobile-cta-bar {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-cta-bar {
+        display: block;
+    }
+
+    body {
+        padding-bottom: 90px;
+    }
+
+    .chat-fab {
+        bottom: 110px;
+        right: 20px;
+    }
+}
 
 .chat-fab {
     position: fixed;
